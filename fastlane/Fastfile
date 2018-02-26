@@ -20,7 +20,7 @@ platform :ios do
     	clean: true,
 		silent: true,
 		export_method: "development",
-		output_directory: "/Users/zhaoning/Desktop/测试包",
+		output_directory: "~/Desktop/测试包",
 		output_name: "HibyMusic_beta_build_"+build_number,
 			)
     # upload_to_testflight
