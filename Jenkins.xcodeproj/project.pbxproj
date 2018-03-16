@@ -275,23 +275,23 @@
 		563607302051219B00B72BB2 /* JFCityViewController */ = {
 			isa = PBXGroup;
 			children = (
-				563607312051219B00B72BB2 /* JFCityCollectionFlowLayout.h */,
-				563607322051219B00B72BB2 /* JFCityCollectionViewCell.m */,
-				563607332051219B00B72BB2 /* Location */,
 				563607362051219B00B72BB2 /* AreaDataManager */,
-				563607392051219B00B72BB2 /* JFButton.h */,
-				5636073A2051219B00B72BB2 /* JFCityHeaderView.m */,
-				5636073B2051219B00B72BB2 /* JFSearchView.m */,
-				5636073C2051219B00B72BB2 /* JFCityViewController.m */,
-				5636073D2051219B00B72BB2 /* JFCityTableViewCell.m */,
+				563607332051219B00B72BB2 /* Location */,
+				563607432051219B00B72BB2 /* AreaDB */,
+				563607312051219B00B72BB2 /* JFCityCollectionFlowLayout.h */,
 				5636073E2051219B00B72BB2 /* JFCityCollectionFlowLayout.m */,
 				5636073F2051219B00B72BB2 /* JFCityCollectionViewCell.h */,
-				563607402051219B00B72BB2 /* JFButton.m */,
+				563607322051219B00B72BB2 /* JFCityCollectionViewCell.m */,
 				563607412051219B00B72BB2 /* JFCityViewController.h */,
+				5636073C2051219B00B72BB2 /* JFCityViewController.m */,
 				563607422051219B00B72BB2 /* JFCityTableViewCell.h */,
-				563607432051219B00B72BB2 /* AreaDB */,
-				563607452051219B00B72BB2 /* JFSearchView.h */,
+				5636073D2051219B00B72BB2 /* JFCityTableViewCell.m */,
 				563607462051219B00B72BB2 /* JFCityHeaderView.h */,
+				5636073A2051219B00B72BB2 /* JFCityHeaderView.m */,
+				563607452051219B00B72BB2 /* JFSearchView.h */,
+				5636073B2051219B00B72BB2 /* JFSearchView.m */,
+				563607392051219B00B72BB2 /* JFButton.h */,
+				563607402051219B00B72BB2 /* JFButton.m */,
 			);
 			path = JFCityViewController;
 			sourceTree = "<group>";

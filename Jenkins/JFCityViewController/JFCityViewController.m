@@ -54,7 +54,7 @@ JFSearchViewDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self createSegMentController];
+    
     _HeaderSectionTotal = 3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseCityWithName:) name:JFCityTableViewCellDidChangeCityNotification object:nil];
     
@@ -87,6 +87,9 @@ JFSearchViewDelegate>
     }
     
     self.historyCityMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:@"historyCity"]];
+    
+    
+    [self createSegMentController];
 }
 
 -(void)createSegMentController{
@@ -97,7 +100,7 @@ JFSearchViewDelegate>
     segmentedControl.frame = CGRectMake(0, 0, 180, 30);
     
     segmentedControl.selectedSegmentIndex = 0;
-    segmentedControl.tintColor = [UIColor colorWithRed:252/255.0 green:245/255.0 blue:248/255.0 alpha:1];
+    segmentedControl.tintColor = [UIColor grayColor];
     
     [segmentedControl addTarget:self action:@selector(indexDidChangeForSegmentedControl:) forControlEvents:UIControlEventValueChanged];
     
@@ -159,7 +162,6 @@ JFSearchViewDelegate>
                     [strongSelf.delegate cityName:name];
                 }
             }
-
         }];
     }else {
         cityName = [cityDic valueForKey:@"cityName"];
