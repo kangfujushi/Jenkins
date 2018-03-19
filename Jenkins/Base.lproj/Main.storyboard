@@ -37,6 +37,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="2" translatesAutoresizingMaskIntoConstraints="NO" id="3Qe-8a-kBe" customClass="STBroswerImageView">
+                                <rect key="frame" x="67" y="399" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="FyY-9M-KuG"/>
+                                    <constraint firstAttribute="width" constant="240" id="p3h-zd-a80"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -44,6 +51,8 @@
                             <constraint firstItem="4tO-I5-x8p" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="CO3-v2-bM0"/>
                             <constraint firstItem="F5c-06-QV5" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Cbw-bP-eVO"/>
                             <constraint firstItem="4tO-I5-x8p" firstAttribute="top" secondItem="F5c-06-QV5" secondAttribute="bottom" constant="80" id="RF7-uk-oOr"/>
+                            <constraint firstItem="3Qe-8a-kBe" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Rqf-VP-K7d"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3Qe-8a-kBe" secondAttribute="bottom" constant="140" id="bnK-uE-aE6"/>
                             <constraint firstItem="4tO-I5-x8p" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="hqN-gm-Ong"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4tO-I5-x8p" secondAttribute="trailing" constant="30" id="pSF-wy-iQe"/>
                         </constraints>
@@ -79,4 +88,7 @@
             <point key="canvasLocation" x="-233" y="150"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="2" width="481" height="300"/>
+    </resources>
 </document>
