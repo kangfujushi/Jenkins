@@ -60,7 +60,7 @@
     if (!_scaleScrollView) {
         _scaleScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.width, self.height)];
         _scaleScrollView.bounces = NO;
-        _scaleScrollView.backgroundColor = [UIColor blackColor];
+        _scaleScrollView.backgroundColor = [UIColor whiteColor];
         _scaleScrollView.contentSize =  self.bounds.size;
         [self addSubview:_scaleScrollView];
     }
