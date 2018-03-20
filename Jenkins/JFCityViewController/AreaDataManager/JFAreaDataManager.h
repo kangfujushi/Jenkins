@@ -56,4 +56,21 @@
  @param result 搜索回调结果
  */
 - (void)searchCityData:(NSString *)searchObject result:(void (^)(NSMutableArray *result))result;
+
+
+/**
+ 从shop_area.sqlite获取所有市
+ 
+ @param countryData 查询返回值，所有国家数组
+ */
+- (void)countryData:(void (^)(NSMutableArray *countryData))countryData;
+
+
+/**
+ 从shop_area.sqlite获取所有市
+ 
+ @param searchObject 查询值
+ @param cityData  查询返回值，根据国家名获取城市
+ */
+- (void)searchCityData:(NSString *)searchObject IsSearch:(BOOL)isSearch CityData:(void (^)(NSMutableArray *cityData))cityData;
 @end

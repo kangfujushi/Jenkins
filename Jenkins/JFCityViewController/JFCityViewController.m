@@ -28,6 +28,7 @@ JFSearchViewDelegate>
     NSMutableArray   *_sectionMutableArray;         //存处理过以后的数组
     NSInteger        _HeaderSectionTotal;           //头section的个数
     CGFloat          _cellHeight;                   //添加的(显示区县名称)cell的高度
+    BOOL             _isAbroad;                     //判断是否是国外
 }
 
 @property (nonatomic, strong) UITableView *rootTableView;
@@ -54,42 +55,95 @@ JFSearchViewDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     _HeaderSectionTotal = 3;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseCityWithName:) name:JFCityTableViewCellDidChangeCityNotification object:nil];
     
     [self.view addSubview:self.rootTableView];
     self.rootTableView.tableHeaderView = self.headerView;
     
-//    [self backBarButtonItem];
-    [self initWithJFAreaDataManaager];
+    [self backBarButtonItem];
     
     _indexMutableArray = [NSMutableArray array];
     _sectionMutableArray = [NSMutableArray array];
+    _manager = [JFAreaDataManager shareInstance];
+    _isAbroad = [[kCurrentCityInfoDefaults objectForKey:@"isAbroad"] boolValue];
+    self.headerView.delegate = self;
+    if (_isAbroad) {
+        _headerView.buttonTitle = @"选择州市";
+    } else {
+        _headerView.buttonTitle = @"选择区县";
+    }
     
-    if ([kCurrentCityInfoDefaults objectForKey:@"cityData"]) {
-        self.characterMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:@"cityData"]];
-        _sectionMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:@"sectionData"]];
+    [self updateData];
+    [self createSegMentController];
+}
+
+#pragma mark --- 刷新数据
+- (void)updateData {
+    [self getData:_isAbroad Result:^(id result) {
+        
+    }];
+}
+
+-(void)getData:(BOOL)isAbroad Result:(void (^) (id result))result {
+    NSString *string = nil;
+    if (isAbroad) {
+        string = @"abroad";
+    } else {
+        string = @"";
+    }
+    if ([kCurrentCityInfoDefaults objectForKey:[@"cityData" stringByAppendingString:string]]) {
+        self.characterMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:[@"cityData" stringByAppendingString:string]]];
+        _sectionMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:[@"sectionData" stringByAppendingString:string]]];
         [_rootTableView reloadData];
     }else {
         //在子线程中异步执行汉字转拼音再转汉字耗时操作
-        dispatch_queue_t serialQueue = dispatch_queue_create("com.city.www", DISPATCH_QUEUE_SERIAL);
-        dispatch_async(serialQueue, ^{
-            [self processData:^(id success) {
-                //回到主线程刷新UI
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [_rootTableView reloadData];
-                    self.locationManager = [[JFLocation alloc] init];
-                    _locationManager.delegate = self;
-                });
+        _manager = [JFAreaDataManager shareInstance];
+        __weak typeof(self) weakSelf = self;
+        if (isAbroad) {
+            [_manager countryData:^(NSMutableArray *countryData) {
+                //立刻生成一个strong引用，以保证实例在执行期间持续存活
+                __strong typeof(self) strongSelf = weakSelf;
+                if (strongSelf) {
+                    strongSelf.cityMutableArray = countryData;
+                    
+                    dispatch_queue_t serialQueue = dispatch_queue_create("com.city.www", DISPATCH_QUEUE_SERIAL);
+                    dispatch_async(serialQueue, ^{
+                        [self processData:countryData IsAbroad:isAbroad Succese:^(id success) {
+                            //回到主线程刷新UI
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [_rootTableView reloadData];
+                                self.locationManager = [[JFLocation alloc] init];
+                                _locationManager.delegate = self;
+                            });
+                        }];
+                    });
+                }
             }];
-        });
+        } else {
+            [_manager cityData:^(NSMutableArray *dataArray) {
+                //立刻生成一个strong引用，以保证实例在执行期间持续存活
+                __strong typeof(self) strongSelf = weakSelf;
+                if (strongSelf) {
+                    strongSelf.cityMutableArray = dataArray;
+                    
+                    dispatch_queue_t serialQueue = dispatch_queue_create("com.city.www", DISPATCH_QUEUE_SERIAL);
+                    dispatch_async(serialQueue, ^{
+                        [self processData:dataArray IsAbroad:isAbroad Succese:^(id success) {
+                            //回到主线程刷新UI
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [_rootTableView reloadData];
+                                self.locationManager = [[JFLocation alloc] init];
+                                _locationManager.delegate = self;
+                            });
+                        }];
+                    });
+                }
+            }];
+        }
     }
     
-    self.historyCityMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:@"historyCity"]];
-    
-    
-    [self createSegMentController];
+    self.historyCityMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:[kCurrentCityInfoDefaults objectForKey:[@"historyCity" stringByAppendingString:string]]];
 }
 
 -(void)createSegMentController{
@@ -99,7 +153,7 @@ JFSearchViewDelegate>
     
     segmentedControl.frame = CGRectMake(0, 0, 180, 30);
     
-    segmentedControl.selectedSegmentIndex = 0;
+    segmentedControl.selectedSegmentIndex = _isAbroad;
     segmentedControl.tintColor = [UIColor grayColor];
     
     [segmentedControl addTarget:self action:@selector(indexDidChangeForSegmentedControl:) forControlEvents:UIControlEventValueChanged];
@@ -111,18 +165,15 @@ JFSearchViewDelegate>
 {
     //我定义了一个 NSInteger tag，是为了记录我当前选择的是分段控件的左边还是右边。
     NSInteger selecIndex = sender.selectedSegmentIndex;
-    switch(selecIndex){
-        case 0:
-            NSLog(@"0");
-            break;
-            
-        case 1:
-            NSLog(@"1");
-            break;
-            
-        default:
-            break;
+    _isAbroad = selecIndex;
+    [kCurrentCityInfoDefaults setObject:@(selecIndex) forKey:@"isAbroad"];
+    
+    if (_isAbroad) {
+        _headerView.buttonTitle = @"选择州市";
+    } else {
+        _headerView.buttonTitle = @"选择区县";
     }
+    [self updateData];
 }
 
 - (void)backBarButtonItem {
@@ -131,20 +182,6 @@ JFSearchViewDelegate>
     [leftButton setTitle:@"Back" forState:UIControlStateNormal];
     [leftButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-}
-
-/// 初始化数据库，获取所有“市”级城市名称
-- (void)initWithJFAreaDataManaager {
-    _manager = [JFAreaDataManager shareInstance];
-    [_manager areaSqliteDBData];
-    __weak typeof(self) weakSelf = self;
-    [_manager cityData:^(NSMutableArray *dataArray) {
-        //立刻生成一个strong引用，以保证实例在执行期间持续存活
-        __strong typeof(self) strongSelf = weakSelf;
-        if (strongSelf) {
-            strongSelf.cityMutableArray = dataArray;
-        }
-    }];
 }
 
 /// 选择城市时调用通知函数（前提是点击cell的section < 3）
@@ -197,6 +234,7 @@ JFSearchViewDelegate>
         _headerView.buttonTitle = @"选择区县";
         _headerView.cityName = [kCurrentCityInfoDefaults objectForKey:@"currentCity"] ? [kCurrentCityInfoDefaults objectForKey:@"currentCity"] : [kCurrentCityInfoDefaults objectForKey:@"locationCity"];
     }
+    
     return _headerView;
 }
 
@@ -224,7 +262,9 @@ JFSearchViewDelegate>
 }
 
 - (NSArray *)hotCityArray {
-    if (!_hotCityArray) {
+    if (_isAbroad) {
+        _hotCityArray = @[@"威尼斯", @"阿姆斯特丹", @"马尔代夫", @"迪拜", @"新加坡", @"巴厘岛", @"普吉岛", @"巴塞罗那", @"普罗旺斯", @"加勒比海"];
+    } else {
         _hotCityArray = @[@"北京市", @"上海市", @"广州市", @"深圳市", @"武汉市", @"天津市", @"西安市", @"南京市", @"杭州市", @"成都市", @"重庆市"];
     }
     return _hotCityArray;
@@ -238,9 +278,12 @@ JFSearchViewDelegate>
 }
 
 /// 汉字转拼音再转成汉字
--(void)processData:(void (^) (id))success {
-    for (int i = 0; i < _cityMutableArray.count; i ++) {
-        NSString *str = _cityMutableArray[i]; //一开始的内容
+-(void)processData:(NSArray *)dataArray IsAbroad:(BOOL)isAbroad Succese:(void (^) (id success))success {
+    NSMutableArray *indexMutableArray =   [NSMutableArray array];
+    NSMutableArray *sectionMutableArray = [NSMutableArray array];
+    
+    for (int i = 0; i < dataArray.count; i ++) {
+        NSString *str = dataArray[i]; //一开始的内容
         if (str.length) {  //下面那2个转换的方法一个都不能少
             NSMutableString *ms = [[NSMutableString alloc] initWithString:str];
             //汉字转拼音
@@ -256,30 +299,30 @@ JFSearchViewDelegate>
                     firstStr = @"#";
                 
                 //如果还没有索引
-                if (_indexMutableArray.count <= 0) {
+                if (indexMutableArray.count <= 0) {
                     //保存当前这个做索引
-                    [_indexMutableArray addObject:firstStr];
+                    [indexMutableArray addObject:firstStr];
                     //用这个字母做字典的key，将当前的标题保存到key对应的数组里面去
                     NSMutableArray *array = [NSMutableArray arrayWithObject:str];
                     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:array,firstStr, nil];
-                    [_sectionMutableArray addObject:dic];
+                    [sectionMutableArray addObject:dic];
                 }else{
                     //如果索引里面包含了当前这个字母，直接保存数据
-                    if ([_indexMutableArray containsObject:firstStr]) {
+                    if ([indexMutableArray containsObject:firstStr]) {
                         //取索引对应的数组，保存当前标题到数组里面
-                        NSMutableArray *array = _sectionMutableArray[0][firstStr];
+                        NSMutableArray *array = sectionMutableArray[0][firstStr];
                         [array addObject:str];
                         //重新保存数据
                         NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:array,firstStr, nil];
-                        [_sectionMutableArray addObject:dic];
+                        [sectionMutableArray addObject:dic];
                     }else{
                         //如果没有包含，说明是新的索引
-                        [_indexMutableArray addObject:firstStr];
+                        [indexMutableArray addObject:firstStr];
                         //用这个字母做字典的key，将当前的标题保存到key对应的数组里面去
                         NSMutableArray *array = [NSMutableArray arrayWithObject:str];
-                        NSMutableDictionary *dic = _sectionMutableArray[0];
+                        NSMutableDictionary *dic = sectionMutableArray[0];
                         [dic setObject:array forKey:firstStr];
-                        [_sectionMutableArray addObject:dic];
+                        [sectionMutableArray addObject:dic];
                     }
                 }
             }
@@ -287,8 +330,9 @@ JFSearchViewDelegate>
     }
     
     //将字母排序
-    NSArray *compareArray = [[_sectionMutableArray[0] allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    _indexMutableArray = [NSMutableArray arrayWithArray:compareArray];
+    NSArray *compareArray = [[sectionMutableArray[0] allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    _indexMutableArray =   [NSMutableArray arrayWithArray:compareArray];
+    _sectionMutableArray = [NSMutableArray arrayWithArray:sectionMutableArray];
     
     //判断第一个是不是字母，如果不是放到最后一个
     BOOL isLetter = [self matchLetter:_indexMutableArray[0]];
@@ -301,13 +345,25 @@ JFSearchViewDelegate>
         [_indexMutableArray insertObject:firstStr atIndex:_indexMutableArray.count];
     }
     
+    [self.characterMutableArray removeAllObjects];
+    self.characterMutableArray = nil;
     [self.characterMutableArray addObjectsFromArray:_indexMutableArray];
     NSData *cityData = [NSKeyedArchiver archivedDataWithRootObject:self.characterMutableArray];
     NSData *sectionData = [NSKeyedArchiver archivedDataWithRootObject:_sectionMutableArray];
     
     //拼音转换太耗时，这里把第一次转换结果存到单例中
-    [kCurrentCityInfoDefaults setValue:cityData forKey:@"cityData"];
-    [kCurrentCityInfoDefaults setObject:sectionData forKey:@"sectionData"];
+    NSString *string = nil;
+    if (isAbroad) {
+        string = @"abroad";
+    } else {
+        string = @"";
+    }
+    [kCurrentCityInfoDefaults setValue:cityData forKey:[@"cityData" stringByAppendingString:string]];
+    [kCurrentCityInfoDefaults setObject:sectionData forKey:[@"sectionData" stringByAppendingString:string]];
+    
+    //获取数据
+    _cityMutableArray = [NSMutableArray arrayWithArray:dataArray];
+    
     success(@"成功");
 }
 
@@ -448,17 +504,31 @@ JFSearchViewDelegate>
 - (void)cityNameWithSelected:(BOOL)selected {
     //获取当前城市的所有辖区
     if (selected) {
-        [_manager areaData:[kCurrentCityInfoDefaults objectForKey:@"cityNumber"] areaData:^(NSMutableArray *areaData) {
-            [self.areaMutableArray addObjectsFromArray:areaData];
-            if (0 == (self.areaMutableArray.count % 3)) {
-                _cellHeight = self.areaMutableArray.count / 3 * 50;
-            }else {
-                _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
-            }
-            if (_cellHeight > 300) {
-                _cellHeight = 300;
-            }
-        }];
+        if (_isAbroad) {
+            [_manager searchCityData:[kCurrentCityInfoDefaults objectForKey:@"currentCity"] IsSearch:NO CityData:^(NSMutableArray *cityData) {
+                [self.areaMutableArray addObjectsFromArray:cityData];
+                if (0 == (self.areaMutableArray.count % 3)) {
+                    _cellHeight = self.areaMutableArray.count / 3 * 50;
+                }else {
+                    _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
+                }
+                if (_cellHeight > 300) {
+                    _cellHeight = 300;
+                }
+            }];
+        } else {
+            [_manager areaData:[kCurrentCityInfoDefaults objectForKey:@"cityNumber"] areaData:^(NSMutableArray *areaData) {
+                [self.areaMutableArray addObjectsFromArray:areaData];
+                if (0 == (self.areaMutableArray.count % 3)) {
+                    _cellHeight = self.areaMutableArray.count / 3 * 50;
+                }else {
+                    _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
+                }
+                if (_cellHeight > 300) {
+                    _cellHeight = 300;
+                }
+            }];
+        }
         
         //添加一行cell
         [_rootTableView endUpdates];
@@ -488,13 +558,24 @@ JFSearchViewDelegate>
     [self deleteSearchView];
 }
 
+
+
 - (void)searchResult:(NSString *)result {
-    [_manager searchCityData:result result:^(NSMutableArray *result) {
-        if ([result count] > 0) {
-            _searchView.backgroundColor = [UIColor whiteColor];
-            _searchView.resultMutableArray = result;
-        }
-    }];
+    if (_isAbroad) {
+        [_manager searchCityData:result IsSearch:YES CityData:^(NSMutableArray *cityData) {
+            if ([cityData count] > 0) {
+                _searchView.backgroundColor = [UIColor whiteColor];
+                _searchView.resultMutableArray = cityData;
+            }
+        }];
+    } else {
+        [_manager searchCityData:result result:^(NSMutableArray *result) {
+            if ([result count] > 0) {
+                _searchView.backgroundColor = [UIColor whiteColor];
+                _searchView.resultMutableArray = result;
+            }
+        }];
+    }
 }
 
 #pragma mark - JFSearchViewDelegate
@@ -541,7 +622,13 @@ JFSearchViewDelegate>
         [_historyCityMutableArray removeLastObject];
     }
     NSData *historyCityData = [NSKeyedArchiver archivedDataWithRootObject:self.historyCityMutableArray];
-    [kCurrentCityInfoDefaults setObject:historyCityData forKey:@"historyCity"];
+    NSString *string = nil;
+    if (_isAbroad) {
+        string = @"abroad";
+    } else {
+        string = @"";
+    }
+    [kCurrentCityInfoDefaults setObject:historyCityData forKey:[@"historyCity" stringByAppendingString:string]];
 }
 
 /// 拒绝定位

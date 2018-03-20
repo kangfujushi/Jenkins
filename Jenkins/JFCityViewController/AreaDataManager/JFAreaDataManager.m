@@ -23,6 +23,7 @@ static JFAreaDataManager *manager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         manager = [[self alloc] init];
+        [manager areaSqliteDBData];
     });
     return manager;
 }
@@ -64,7 +65,7 @@ static JFAreaDataManager *manager = nil;
     }
 }
 
-/// 所有市区的名称
+#pragma mark --- 所有市区的名称
 - (void)cityData:(void (^)(NSMutableArray *dataArray))cityData {
     NSMutableArray *resultArray = [[NSMutableArray alloc] init];
     FMResultSet *result = [self.db executeQuery:@"SELECT DISTINCT city_name FROM shop_area;"];
@@ -75,7 +76,7 @@ static JFAreaDataManager *manager = nil;
     cityData(resultArray);
 }
 
-/// 获取当前市的city_number
+#pragma mark --- 获取当前市的city_number
 - (void)cityNumberWithCity:(NSString *)city cityNumber:(void (^)(NSString *cityNumber))cityNumber {
     FMResultSet *result = [self.db executeQuery:[NSString stringWithFormat:@"SELECT DISTINCT city_number FROM shop_area WHERE city_name = '%@';",city]];
     while ([result next]) {
@@ -84,7 +85,7 @@ static JFAreaDataManager *manager = nil;
     }
 }
 
-/// 所有区县的名称
+#pragma mark --- 所有区县的名称
 - (void)areaData:(NSString *)cityNumber areaData:(void (^)(NSMutableArray *areaData))areaData {
     NSMutableArray *resultArray = [[NSMutableArray alloc] init];
     NSString *sqlString = [NSString stringWithFormat:@"SELECT area_name FROM shop_area WHERE city_number ='%@';",cityNumber];
@@ -96,7 +97,7 @@ static JFAreaDataManager *manager = nil;
     areaData(resultArray);
 }
 
-/// 根据city_number获取当前城市
+#pragma mark --- 根据city_number获取当前城市
 - (void)currentCity:(NSString *)cityNumber currentCityName:(void (^)(NSString *name))currentCityName {
     FMResultSet *result = [self.db executeQuery:[NSString stringWithFormat:@"SELECT DISTINCT city_name FROM shop_area WHERE city_number = '%@';",cityNumber]];
     while ([result next]) {
@@ -105,6 +106,7 @@ static JFAreaDataManager *manager = nil;
     }
 }
 
+#pragma mark --- 根据城市名获取镇区
 - (void)searchCityData:(NSString *)searchObject result:(void (^)(NSMutableArray *result))result {
     NSMutableArray *resultArray = [[NSMutableArray alloc] init];
     FMResultSet *areaResult = [self.db executeQuery:[NSString stringWithFormat:@"SELECT DISTINCT area_name,city_name,city_number FROM shop_area WHERE area_name LIKE '%@%%';",searchObject]];
@@ -146,5 +148,57 @@ static JFAreaDataManager *manager = nil;
     //返回结果
     result(resultArray);
 }
+
+#pragma mark --- 国外 --- 获取所有国家
+- (void)countryData:(void (^)(NSMutableArray *countryData))countryData {
+    NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+    FMResultSet *result = [self.db
+                           executeQuery
+                           :@"SELECT DISTINCT name from country"];
+    while ([result next]) {
+        NSString *cityName = [result stringForColumn:@"name"];
+        [resultArray addObject:cityName];
+    }
+    
+    countryData(resultArray);
+}
+
+#pragma mark --- 国外 --- 根据国家名获取城市
+- (void)searchCityData:(NSString *)searchObject IsSearch:(BOOL)isSearch CityData:(void (^)(NSMutableArray *cityData))cityData {
+    NSMutableArray *resultArray = [[NSMutableArray alloc] init];
+    
+    if (isSearch) {
+        FMResultSet *result = [self.db
+                               executeQuery
+                               :[NSString stringWithFormat:@"select name from country where name LIKE '%%%@%%';",searchObject]];
+        while ([result next]) {
+            NSString *cityName = [result stringForColumn:@"name"];
+            [resultArray addObject:cityName];
+        }
+        
+        if (resultArray.count == 0) {
+            FMResultSet *result = [self.db
+                                   executeQuery
+                                   :[NSString stringWithFormat:@"select ci.name from city ci where ci.name LIKE '%%%@%%';",searchObject]];
+            while ([result next]) {
+                NSString *cityName = [result stringForColumn:@"name"];
+                [resultArray addObject:cityName];
+            }
+        }
+    } else {
+        FMResultSet *result = [self.db
+                               executeQuery
+                               :[NSString stringWithFormat:@"select s.name from country c,state s where c.code = s.country_code and c.name LIKE '%@%%' and s.name!='000';",searchObject]];
+        while ([result next]) {
+            NSString *cityName = [result stringForColumn:@"name"];
+            [resultArray addObject:cityName];
+        }
+    }
+    
+    
+    
+    cityData(resultArray);
+}
+
 
 @end

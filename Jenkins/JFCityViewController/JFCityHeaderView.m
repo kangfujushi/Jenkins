@@ -129,7 +129,6 @@
         if (self.delegate && [self.delegate respondsToSelector:@selector(searchResult:)]) {
             [self.delegate searchResult:searchText];
         }
-
     }
 }
 

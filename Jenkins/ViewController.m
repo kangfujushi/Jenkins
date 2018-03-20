@@ -31,30 +31,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+}
+
+
+
+- (void)getData {
+}
+
+- (void)initLocation {
     [[LocationTool sharedLocationTool] getCurrentCity:^(NSString *string) {
         NSLog(@"%@",string);
     }];
     
     self.locationManager = [[JFLocation alloc] init];
     _locationManager.delegate = self;
-    
-    
-    // Do any additional setup after loading the view.
-    
-    //    if (![[NSUserDefaults standardUserDefaults] boolForKey:BOOLFORKEY]) {
-    //        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:BOOLFORKEY];
-    //        // 静态引导页
-    //        //        [self setStaticGuidePage];
-    //
-    //        // 动态引导页
-    //        [self setDynamicGuidePage];
-    //
-    //        // 视频引导页
-    //        // [self setVideoGuidePage];
-    //    }
-    
-//    [self setDynamicGuidePage];
+}
+
+- (void)showAD {
+    [self setDynamicGuidePage];
 }
 
 #pragma mark - 设置APP静态图片引导页
