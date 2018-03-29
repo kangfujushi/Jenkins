@@ -26,7 +26,6 @@
 		5636074D2051219C00B72BB2 /* JFCityTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5636073D2051219B00B72BB2 /* JFCityTableViewCell.m */; };
 		5636074E2051219C00B72BB2 /* JFCityCollectionFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5636073E2051219B00B72BB2 /* JFCityCollectionFlowLayout.m */; };
 		5636074F2051219C00B72BB2 /* JFButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 563607402051219B00B72BB2 /* JFButton.m */; };
-		563607502051219C00B72BB2 /* shop_area.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 563607442051219B00B72BB2 /* shop_area.sqlite */; };
 		563607612051228000B72BB2 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 563607522051228000B72BB2 /* README.markdown */; };
 		563607622051228000B72BB2 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 563607532051228000B72BB2 /* LICENSE.txt */; };
 		563607632051228000B72BB2 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 563607572051228000B72BB2 /* FMDatabaseQueue.m */; };
@@ -64,6 +63,7 @@
 		567ADB12205FB752004F2BF6 /* STPhotoBroswer.m in Sources */ = {isa = PBXBuildFile; fileRef = 567ADB0D205FB752004F2BF6 /* STPhotoBroswer.m */; };
 		567ADB13205FB752004F2BF6 /* STImageVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 567ADB0E205FB752004F2BF6 /* STImageVIew.m */; };
 		567ADB17205FB7CC004F2BF6 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 567ADB16205FB7CC004F2BF6 /* UIView+Extension.m */; };
+		56F41D4D206D055800FC1B34 /* shop_area.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 56F41D4C206D055800FC1B34 /* shop_area.sqlite */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,7 +119,6 @@
 		563607402051219B00B72BB2 /* JFButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFButton.m; sourceTree = "<group>"; };
 		563607412051219B00B72BB2 /* JFCityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFCityViewController.h; sourceTree = "<group>"; };
 		563607422051219B00B72BB2 /* JFCityTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFCityTableViewCell.h; sourceTree = "<group>"; };
-		563607442051219B00B72BB2 /* shop_area.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = shop_area.sqlite; sourceTree = "<group>"; };
 		563607452051219B00B72BB2 /* JFSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFSearchView.h; sourceTree = "<group>"; };
 		563607462051219B00B72BB2 /* JFCityHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFCityHeaderView.h; sourceTree = "<group>"; };
 		563607522051228000B72BB2 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
@@ -187,6 +186,7 @@
 		567ADB10205FB752004F2BF6 /* STBroswerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STBroswerImageView.h; sourceTree = "<group>"; };
 		567ADB15205FB7CC004F2BF6 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
 		567ADB16205FB7CC004F2BF6 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		56F41D4C206D055800FC1B34 /* shop_area.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = shop_area.sqlite; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -331,7 +331,7 @@
 		563607432051219B00B72BB2 /* AreaDB */ = {
 			isa = PBXGroup;
 			children = (
-				563607442051219B00B72BB2 /* shop_area.sqlite */,
+				56F41D4C206D055800FC1B34 /* shop_area.sqlite */,
 			);
 			path = AreaDB;
 			sourceTree = "<group>";
@@ -594,9 +594,9 @@
 				4DA09D2A20336CBD0061DDC1 /* Assets.xcassets in Resources */,
 				563608042051385D00B72BB2 /* guideImage3.jpg in Resources */,
 				5636080B2051385D00B72BB2 /* guideImage6.gif in Resources */,
-				563607502051219C00B72BB2 /* shop_area.sqlite in Resources */,
 				563608022051385D00B72BB2 /* guideImage1.jpg in Resources */,
 				563607FF2051385D00B72BB2 /* GuideImage.bundle in Resources */,
+				56F41D4D206D055800FC1B34 /* shop_area.sqlite in Resources */,
 				563607902051228600B72BB2 /* README.md in Resources */,
 				5636080A2051385D00B72BB2 /* guideImage7.gif in Resources */,
 				563608082051385D00B72BB2 /* guideMovie1.mov in Resources */,

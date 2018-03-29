@@ -44,31 +44,31 @@ static JFAreaDataManager *manager = nil;
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     self.db = db;
     BOOL success = [db open];
-    if (success) {
-        // 数据库创建成功!
-        NSLog(@"数据库创建成功!");
-        NSString *sqlStr = @"CREATE TABLE IF NOT EXISTS shop_area (area_number INTEGER ,area_name TEXT ,city_number INTEGER ,city_name TEXT ,province_number INTEGER ,province_name TEXT);";
-        BOOL successT = [self.db executeUpdate:sqlStr];
-        if (successT) {
-        // 创建表成功!
-            
-            NSLog(@"创建表成功!");
-        }else{
-            // 创建表失败!
-            NSLog(@"创建表失败!");
-            [self.db close];
-        }
-    }else{
-        // 数据库创建失败!
-        NSLog(@"数据库创建失败!");
-        [self.db close];
-    }
+//    if (success) {
+//        // 数据库创建成功!
+//        NSLog(@"数据库创建成功!");
+//        NSString *sqlStr = @"CREATE TABLE IF NOT EXISTS xm_china (area_number INTEGER ,area_name TEXT ,city_number INTEGER ,city_name TEXT ,province_number INTEGER ,province_name TEXT);";
+//        BOOL successT = [self.db executeUpdate:sqlStr];
+//        if (successT) {
+//        // 创建表成功!
+//            
+//            NSLog(@"创建表成功!");
+//        }else{
+//            // 创建表失败!
+//            NSLog(@"创建表失败!");
+//            [self.db close];
+//        }
+//    }else{
+//        // 数据库创建失败!
+//        NSLog(@"数据库创建失败!");
+//        [self.db close];
+//    }
 }
 
 #pragma mark --- 所有市区的名称
 - (void)cityData:(void (^)(NSMutableArray *dataArray))cityData {
     NSMutableArray *resultArray = [[NSMutableArray alloc] init];
-    FMResultSet *result = [self.db executeQuery:@"SELECT DISTINCT city_name FROM shop_area;"];
+    FMResultSet *result = [self.db executeQuery:@"SELECT DISTINCT city_name FROM xm_china;"];
     while ([result next]) {
         NSString *cityName = [result stringForColumn:@"city_name"];
         [resultArray addObject:cityName];
@@ -154,10 +154,14 @@ static JFAreaDataManager *manager = nil;
     NSMutableArray *resultArray = [[NSMutableArray alloc] init];
     FMResultSet *result = [self.db
                            executeQuery
-                           :@"SELECT DISTINCT name from country"];
+                           :@"SELECT DISTINCT city_name FROM xm_abroad;"];
+    NSInteger count = 1;
     while ([result next]) {
-        NSString *cityName = [result stringForColumn:@"name"];
-        [resultArray addObject:cityName];
+        NSString *cityName = [result stringForColumn:@"city_name"];
+        if (cityName) {
+            [resultArray addObject:cityName];
+        }
+        NSLog(@"%ld",count++);
     }
     
     countryData(resultArray);

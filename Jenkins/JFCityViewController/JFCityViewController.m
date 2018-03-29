@@ -199,10 +199,6 @@ JFSearchViewDelegate>
                     [strongSelf.delegate cityName:name];
                 }
             }
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFirstPageHotelLocationSelected object:@{@"cityname":cityName,@"citycode":[kCurrentCityInfoDefaults objectForKey:@"cityNumber"]}];
-            });
         }];
     }else {
         cityName = [cityDic valueForKey:@"cityName"];
@@ -214,10 +210,6 @@ JFSearchViewDelegate>
         [_manager cityNumberWithCity:[cityDic valueForKey:@"cityName"] cityNumber:^(NSString *cityNumber) {
             [kCurrentCityInfoDefaults setObject:cityNumber forKey:@"cityNumber"];
         }];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:kFirstPageHotelLocationSelected object:@{@"cityname":cityName,@"citycode":@""}];
-        });
         
         [self historyCity:cityName];
     }
@@ -499,10 +491,6 @@ JFSearchViewDelegate>
     [kCurrentCityInfoDefaults setObject:cell.textLabel.text forKey:@"currentCity"];
     [_manager cityNumberWithCity:cell.textLabel.text cityNumber:^(NSString *cityNumber) {
         [kCurrentCityInfoDefaults setObject:cityNumber forKey:@"cityNumber"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kFirstPageHotelLocationSelected object:@{@"cityname":cell.textLabel.text,@"citycode":cityNumber}];
-    }];
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:kFirstPageHotelLocationSelected object:@{@"cityname":cell.textLabel.text}];
     }];
     if (self.delegate && [self.delegate respondsToSelector:@selector(cityName:)]) {
         [self.delegate cityName:cell.textLabel.text];
