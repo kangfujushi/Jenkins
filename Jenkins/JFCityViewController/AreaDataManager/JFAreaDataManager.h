@@ -29,7 +29,7 @@
  @param city 查询对象（城市名）
  @param cityNumber 查询返回值（city_number）
  */
-- (void)cityNumberWithCity:(NSString *)city cityNumber:(void (^)(NSString *cityNumber))cityNumber;
+- (void)cityNumberWithCity:(NSString *)city cityNumber:(void (^)(NSString *cityNumber))cityNumber IsAbroad:(BOOL)isAbroad;
 
 /**
  获取某个市的所有区县
@@ -37,7 +37,7 @@
  @param cityNumber 查询对象
  @param areaData 查询返回值,该市的所有区县数组
  */
-- (void)areaData:(NSString *)cityNumber areaData:(void (^)(NSMutableArray *areaData))areaData;
+- (void)areaData:(NSString *)cityNumber areaData:(void (^)(NSMutableArray *areaData))areaData IsAbroad:(BOOL)isAbroad;
 
 
 /**
@@ -46,7 +46,7 @@
  @param cityNumber 城市ID
  @param currentCityName 当前城市名字
  */
-- (void)currentCity:(NSString *)cityNumber currentCityName:(void (^)(NSString *name))currentCityName;
+- (void)currentCity:(NSString *)cityNumber currentCityName:(void (^)(NSString *name))currentCityName IsAboad:(BOOL)isAbrod;
 
 
 /**

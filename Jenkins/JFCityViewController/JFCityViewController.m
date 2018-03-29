@@ -199,7 +199,7 @@ JFSearchViewDelegate>
                     [strongSelf.delegate cityName:name];
                 }
             }
-        }];
+        } IsAboad:_isAbroad];
     }else {
         cityName = [cityDic valueForKey:@"cityName"];
         _headerView.cityName = cityName;
@@ -209,7 +209,7 @@ JFSearchViewDelegate>
         }
         [_manager cityNumberWithCity:[cityDic valueForKey:@"cityName"] cityNumber:^(NSString *cityNumber) {
             [kCurrentCityInfoDefaults setObject:cityNumber forKey:@"cityNumber"];
-        }];
+        } IsAbroad:_isAbroad];
         
         [self historyCity:cityName];
     }
@@ -491,7 +491,7 @@ JFSearchViewDelegate>
     [kCurrentCityInfoDefaults setObject:cell.textLabel.text forKey:@"currentCity"];
     [_manager cityNumberWithCity:cell.textLabel.text cityNumber:^(NSString *cityNumber) {
         [kCurrentCityInfoDefaults setObject:cityNumber forKey:@"cityNumber"];
-    }];
+    } IsAbroad:_isAbroad];
     if (self.delegate && [self.delegate respondsToSelector:@selector(cityName:)]) {
         [self.delegate cityName:cell.textLabel.text];
     }
@@ -504,31 +504,23 @@ JFSearchViewDelegate>
 - (void)cityNameWithSelected:(BOOL)selected {
     //获取当前城市的所有辖区
     if (selected) {
-        if (_isAbroad) {
-            [_manager searchCityData:[kCurrentCityInfoDefaults objectForKey:@"currentCity"] IsSearch:NO CityData:^(NSMutableArray *cityData) {
-                [self.areaMutableArray addObjectsFromArray:cityData];
-                if (0 == (self.areaMutableArray.count % 3)) {
-                    _cellHeight = self.areaMutableArray.count / 3 * 50;
-                }else {
-                    _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
-                }
-                if (_cellHeight > 300) {
-                    _cellHeight = 300;
-                }
-            }];
-        } else {
-            [_manager areaData:[kCurrentCityInfoDefaults objectForKey:@"cityNumber"] areaData:^(NSMutableArray *areaData) {
-                [self.areaMutableArray addObjectsFromArray:areaData];
-                if (0 == (self.areaMutableArray.count % 3)) {
-                    _cellHeight = self.areaMutableArray.count / 3 * 50;
-                }else {
-                    _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
-                }
-                if (_cellHeight > 300) {
-                    _cellHeight = 300;
-                }
-            }];
-        }
+//        NSString *string = nil;
+//        if (_isAbroad) {
+//            string = @"abroad";
+//        } else {
+//            string = @"";
+//        }
+        [_manager areaData:[kCurrentCityInfoDefaults objectForKey:@"cityNumber"] areaData:^(NSMutableArray *areaData) {
+            [self.areaMutableArray addObjectsFromArray:areaData];
+            if (0 == (self.areaMutableArray.count % 3)) {
+                _cellHeight = self.areaMutableArray.count / 3 * 50;
+            }else {
+                _cellHeight = (self.areaMutableArray.count / 3 + 1) * 50;
+            }
+            if (_cellHeight > 300) {
+                _cellHeight = 300;
+            }
+        } IsAbroad:_isAbroad];
         
         //添加一行cell
         [_rootTableView endUpdates];
@@ -607,7 +599,7 @@ JFSearchViewDelegate>
     [kCurrentCityInfoDefaults setObject:city forKey:@"locationCity"];
     [_manager cityNumberWithCity:city cityNumber:^(NSString *cityNumber) {
         [kCurrentCityInfoDefaults setObject:cityNumber forKey:@"cityNumber"];
-    }];
+    } IsAbroad:_isAbroad];
     _headerView.cityName = city;
     [self historyCity:city];
     [_rootTableView reloadData];

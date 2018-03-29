@@ -110,7 +110,7 @@
             [KCURRENTCITYINFODEFAULTS setObject:city forKey:@"currentCity"];
             [self.manager cityNumberWithCity:city cityNumber:^(NSString *cityNumber) {
                 [KCURRENTCITYINFODEFAULTS setObject:cityNumber forKey:@"cityNumber"];
-            }];
+            } IsAbroad:NO];
         }];
         [alertController addAction:cancelAction];
         [alertController addAction:okAction];
