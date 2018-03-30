@@ -35,77 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Jenkins/JFCityViewController/JFCityViewController.m"
-            timestampString = "544017545.612299"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "-getData:Result:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Jenkins/JFCityViewController/JFCityViewController.m"
-            timestampString = "544017545.612354"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
-            landmarkName = "-getData:Result:"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[JFCityViewController getData:Result:]"
-                  moduleName = "Jenkins"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhaoning1/Documents/GitHub/Jenkins/Jenkins/JFCityViewController/JFCityViewController.m"
-                  timestampString = "544017545.7736779"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "124"
-                  endingLineNumber = "124"
-                  offsetFromSymbolStart = "1168">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__39-[JFCityViewController getData:Result:]_block_invoke.90"
-                  moduleName = "Jenkins"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/zhaoning1/Documents/GitHub/Jenkins/Jenkins/JFCityViewController/JFCityViewController.m"
-                  timestampString = "544017545.777616"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "126"
-                  endingLineNumber = "126"
-                  offsetFromSymbolStart = "47">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Jenkins/JFCityViewController/AreaDataManager/JFAreaDataManager.m"
-            timestampString = "544017545.612407"
+            timestampString = "544063273.7252851"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "167"
             endingLineNumber = "167"
-            landmarkName = "-countryData:"
+            landmarkName = "-searchCityData:IsSearch:CityData:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
